@@ -21,3 +21,7 @@ def process_features(movies: list, genre_df: pd.DataFrame) -> None:
         })
 
     df = pd.DataFrame(extracted_data)
+    
+    for genre in genre_df["name"].tolist():
+        df[genre] = df["genres"].apply(lambda x: 1 if genre in x else 0)
+    df = df.drop("genres", axis=1)
