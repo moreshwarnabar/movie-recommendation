@@ -1,6 +1,10 @@
 import os
 import requests
 import pandas as pd
+from utils.logging import setup_logger
+from utils.request_handler import fetch_data
+
+logger = setup_logger('fetch_movies')
 
 def get_genres() -> pd.DataFrame:
     if os.path.exists("data/genres.csv"):
@@ -12,16 +16,15 @@ def get_genres() -> pd.DataFrame:
         "Authorization": f"Bearer {os.getenv('TMDB_API_KEY')}"
     }
 
-    response = requests.get(url, headers=headers)
+    data= fetch_data(url, headers)
 
-    if response.status_code == 200:
-        genres = response.json()["genres"]
+    if data and data["genres"]:
+        genres = data["genres"]
         df = pd.DataFrame(genres)
         df.to_csv("data/genres.csv", index=False)
         return df
-    else:
-        print(f"Failed to fetch genres. Status code: {response.status_code}")
-        return None
+    
+    return None
 
 def get_movie_data(page_num: int = 1) -> tuple[int, list]:
     url = f"https://api.themoviedb.org/3/discover/movie?language=en-US&page={page_num}&sort_by=popularity.desc"
@@ -30,14 +33,11 @@ def get_movie_data(page_num: int = 1) -> tuple[int, list]:
         "Authorization": f"Bearer {os.getenv('TMDB_API_KEY')}"
     }
 
-    response = requests.get(url, headers=headers)
+    data = fetch_data(url, headers)
 
-    if response.status_code == 200:
-        resp_json: dict = response.json()
-        movies: list = resp_json["results"]
-        page: int = resp_json["page"]
+    if data and data["results"]:
+        movies: list = data["results"]
 
-        return page + 1, movies
-    else:
-        print(f"Failed to fetch movie data. Status code: {response.status_code}")
-        return page_num, None
+        return movies
+    
+    return None

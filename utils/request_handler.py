@@ -4,10 +4,10 @@ from utils.logging import setup_logger
 
 logger = setup_logger('request_handler')
 
-def fetch_data(url: str, params: dict, max_retries: int = 3, sleep_time: int = 1) -> dict:
+def fetch_data(url: str, headers: dict, max_retries: int = 3, sleep_time: int = 1) -> dict:
     for attempt in range(max_retries):
         try:
-            response = requests.get(url, params=params)
+            response = requests.get(url, headers=headers)
             if response.status_code == 200:
                 logger.info(f"Successfully fetched data from {url}")
                 return response.json()
