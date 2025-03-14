@@ -1,3 +1,4 @@
+import time
 import pandas as pd
 from dotenv import load_dotenv
 from ingestion.fetch_movies import get_genres, get_movie_data
@@ -13,6 +14,8 @@ def main():
         movies: list = get_movie_data(page)
         df: pd.DataFrame = process_features(movies, genres)
         store_features(df)
+
+        time.sleep(30)
 
 if __name__ == "__main__":
     main()
