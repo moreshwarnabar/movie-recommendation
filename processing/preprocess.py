@@ -2,7 +2,7 @@ import os
 import pandas as pd
 from sklearn.feature_extraction.text import TfidfVectorizer
 
-def process_features(movies: list, genre_df: pd.DataFrame) -> None:
+def process_features(movies: list, genre_df: pd.DataFrame) -> pd.DataFrame:
     if not movies:
         print("No movies to process.")
         return
@@ -27,12 +27,7 @@ def process_features(movies: list, genre_df: pd.DataFrame) -> None:
     df = encodeGenres(df, genre_df["name"].to_list())
     df = vectorizeOverview(df)
 
-    if os.path.exists("data/preprocessed_data.csv"):
-        preprocessed_df = pd.read_csv("data/preprocessed_data.csv")
-        preprocessed_df = pd.concat([preprocessed_df, df], axis=0)
-        preprocessed_df.to_csv("data/preprocessed_data.csv", index=False)
-    else:
-        df.to_csv("data/preprocessed_data.csv", index=False)
+    return df
 
 def encodeGenres(df: pd.DataFrame, genres: list) -> pd.DataFrame:
     for genre in genres:

@@ -1,7 +1,7 @@
 import pandas as pd
 from dotenv import load_dotenv
 from ingestion.fetch_movies import get_genres, get_movie_data
-from processing.preprocess import process_features
+from processing.preprocess import process_features, store_features
 
 load_dotenv()
     
@@ -13,7 +13,8 @@ def main():
     page_num, movies = get_movie_data()
 
     if movies:
-        process_features(movies, genres)
+        df: pd.DataFrame = process_features(movies, genres)
+        store_features(df)
 
 if __name__ == "__main__":
     main()
